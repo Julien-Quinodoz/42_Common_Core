@@ -1,0 +1,91 @@
+
+curl http://localhost:8080/
+
+curl -X POST http://localhost:8080/42-webserv/messages/Test_Curl -d "T1 TEST CURL POST  T1"
+
+curl -X DELETE http://localhost:8080/42-webserv/messages/Test_Curl
+
+curl -X LETSGO http://localhost:8080/42-webserv/messages/Test_Curl
+
+
+Test 201/204
+Nouveau fichier (attendu 201 Created + Location):
+
+curl -i -X POST http://127.0.0.1:8080/42-webserv/messages/created-201-check.txt --data-binary 'hello'
+
+Overwrite (attendu 204 No Content):
+curl -i -X POST http://127.0.0.1:8080/42-webserv/messages/created-201-check.txt --data-binary 'again'
+
+
+TEST CGI  : http://localhost:8080/cgi-bin/time.py
+		 :  http://localhost:8080/cgi-bin/env.sh
+
+		  http://localhost:8080/cgi-bin/calc.py?f_num=10&oper=+&s_num=5
+		 curl 'http://localhost:8080/cgi-bin/calc.py?f_num=10&oper=+&s_num=6'
+
+! rajouter curl avant  pour tester dans terminal
+
+
+*** TEST TOO LARGE **
+commande pour tester 413 Too LARGE :
+     head -c 3000000 /dev/zero | curl -i -X POST -H "Content-Type: text/plain" --data-binary @- http://localhost:8081/
+
+	 ****** Attention ---> si test avec une valeur en dessous --> index.html est remplacer par un binair
+
+
+
+
+** TEST 2 serveur sur le meme port 8084 **
+
+./webserv config/test.conf
+
+curl http://localhost:8084/ -H "Host: localhost"
+
+curl http://localhost:8084/ -H "Host: localhost_2"
+
+SI LE MEME NOM : localhost  : devrais bloquer
+
+
+
+** TEST redirection **
+
+sans le / à la fin = redirection = 301 !
+curl -i http://localhost:8080/42-webserv
+
+** LISTER le repertoire :
+curl -i http://localhost:8080/42-webserv/
+
+
+
+TESTE siege LINUX:
+
+### Commande siege -->
+
+
+siege -c 50 -t 1M http://127.0.0.1:8083/
+
+curl http://localhost:8083/
+
+siege -c 50 -t 1M http://127.0.0.1:8083/
+
+siege -c 100 -t 5M http://127.0.0.1:8083/
+
+
+
+
+
+
+*********************************************************************************
+#### Pour installer SIEGE : instal -->
+cd /tmp
+curl -L https://download.joedog.org/siege/siege-latest.tar.gz -o siege.tar.gz
+ls -lh siege.tar.gz
+
+tar -xzf siege.tar.gz
+cd siege-*
+./configure --prefix=$HOME/.local
+make
+make install
+
+~/.local/bin/siege --version
+

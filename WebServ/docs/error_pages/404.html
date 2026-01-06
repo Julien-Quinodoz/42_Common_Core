@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100%;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* Animations */
+        @keyframes softGlow {
+            0%, 100% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+            50% { text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff; }
+        }
+
+        @keyframes subtleShift {
+            0% { transform: translate(0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Background effects */
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: gentlePulse 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* Main container */
+        .error-container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Error code */
+        .error-code {
+            font-size: 12rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin: 0;
+            animation: softGlow 3s ease-in-out infinite alternate;
+            text-shadow:
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff;
+            position: relative;
+        }
+
+        /* Main message */
+        .main-message {
+            font-size: 3rem;
+            color: #00d4ff;
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00ff41;
+            margin: 20px 0 40px 0;
+            animation: fadeInUp 1s ease-out 1s both;
+            opacity: 0.8;
+        }
+
+
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00d4ff;
+            font-size: 0.9rem;
+            animation: fadeInUp 1s ease-out 2.5s both;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 8rem;
+            }
+
+            .main-message {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-code {
+                font-size: 6rem;
+            }
+
+            .main-message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Background effects -->
+  <div class="background-grid"></div>
+  <main class="error-container">
+   <h1 class="error-code" id="error-code" data-text="404">404</h1>
+   <h2 class="main-message" id="main-message">PAGE NOT FOUND</h2>
+   <p class="subtitle" id="subtitle">La ressource demandée n'existe pas sur ce serveur</p>
+  </main>
+  <footer class="footer">
+   <div>
+    42 Webserv - Error Handler
+   </div>
+  </footer>
+  <script>
+        // Configuration par défaut
+        const defaultConfig = {
+            error_code: "404",
+            main_message: "PAGE NOT FOUND",
+            subtitle: "La ressource demandée n'existe pas sur ce serveur"
+        };
+
+        // Fonction pour mettre à jour l'interface
+        async function onConfigChange(config) {
+            const errorCode = config.error_code || defaultConfig.error_code;
+            const mainMessage = config.main_message || defaultConfig.main_message;
+            const subtitle = config.subtitle || defaultConfig.subtitle;
+
+            document.getElementById('error-code').textContent = errorCode;
+            document.getElementById('main-message').textContent = mainMessage;
+            document.getElementById('subtitle').textContent = subtitle;
+        }
+
+        // Initialisation du SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["error_code", config.error_code || defaultConfig.error_code],
+                    ["main_message", config.main_message || defaultConfig.main_message],
+                    ["subtitle", config.subtitle || defaultConfig.subtitle]
+                ])
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0010835090e5d9',t:'MTc2MzM5MTI3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

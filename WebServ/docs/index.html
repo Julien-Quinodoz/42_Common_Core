@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="fr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>42 Webserv Test Lab</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* Background effects */
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: gentlePulse 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* Animations */
+        @keyframes neonGlow {
+            0%, 100% { text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 15px #00d4ff; }
+            50% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 40px #00d4ff; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes buttonFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 65, 0.1));
+            border-bottom: 2px solid #00d4ff;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 0;
+            animation: neonGlow 2s ease-in-out infinite alternate;
+            color: #00d4ff;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin: 10px 0 0 0;
+            color: #00ff41;
+            animation: glitch 3s infinite;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        /* Button grid */
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            padding: 15px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: buttonFloat 3s ease-in-out infinite;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            background-size: 200% 100%;
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 65, 0.5);
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #666666, #444444);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #00d4ff;
+            margin-top: 50px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-42 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+            animation: neonGlow 3s ease-in-out infinite alternate;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            color: #00ff41;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+        }
+
+        /* Animation delays */
+        .section:nth-child(1) { animation-delay: 0.2s; }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Background effects -->
+  <div class="background-grid"></div>
+  <header class="header">
+   <h1 class="main-title" id="main-title">42 Webserv Test Lab</h1>
+   <p class="subtitle" id="subtitle">by jquinodo &amp; rtari</p>
+  </header>
+  <main class="container">
+   <section class="section">
+    <h2 class="section-title" id="section-title">🌐 Test GET</h2>
+    <div class="button-grid"><a href="/42-webserv/page1.html" class="btn" style="animation-delay: 0s;">Ouvrir Page 1</a> <a href="/42-webserv/page2.html" class="btn" style="animation-delay: 0.5s;">Ouvrir Page 2</a> <a href="/42-webserv/page3.html" class="btn" style="animation-delay: 1s;">Envoyer un Message</a> <a href="/42-webserv/page4.html" class="btn btn-delete" style="animation-delay: 1.5s;">Supprimer des Messages</a> <a href="/42-webserv/page5.html" class="btn" style="animation-delay: 2s;">Tester les CGI</a>
+    </div>
+   </section>
+  </main>
+  <footer class="footer">
+   <div class="logo-42">
+    42
+   </div>
+   <p class="footer-text" id="footer-text">École 42 - Webserv Project</p>
+  </footer>
+  <script>
+        // Configuration par défaut
+        const defaultConfig = {
+            main_title: "TEST WebServ",
+            subtitle: "by jquinodo & rtari",
+            section_title: "🌐 Test GET",
+            footer_text: "École 42 - Webserv Project"
+        };
+
+        // Fonction pour mettre à jour l'interface
+        async function onConfigChange(config) {
+            const mainTitle = config.main_title || defaultConfig.main_title;
+            const subtitle = config.subtitle || defaultConfig.subtitle;
+            const sectionTitle = config.section_title || defaultConfig.section_title;
+            const footerText = config.footer_text || defaultConfig.footer_text;
+
+            document.getElementById('main-title').textContent = mainTitle;
+            document.getElementById('subtitle').innerHTML = subtitle;
+            document.getElementById('section-title').textContent = sectionTitle;
+            document.getElementById('footer-text').textContent = footerText;
+        }
+
+        // Initialisation du SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["main_title", config.main_title || defaultConfig.main_title],
+                    ["subtitle", config.subtitle || defaultConfig.subtitle],
+                    ["section_title", config.section_title || defaultConfig.section_title],
+                    ["footer_text", config.footer_text || defaultConfig.footer_text]
+                ])
+            });
+        }
+
+        // Effet d'apparition progressive du contenu
+        window.addEventListener('load', () => {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.transform = 'translateY(0)';
+                    section.style.opacity = '1';
+                }, index * 200);
+            });
+        });
+
+        // Effet de particules sur les boutons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 10);
+            });
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a01d4146516bc4e',t:'MTc2MzQwOTc3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

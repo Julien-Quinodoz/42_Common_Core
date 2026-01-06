@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 5 - Tester les CGI</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    html { height: 100%; }
+
+    @keyframes softGlow {
+      0%, 100% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+      50% { text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes gentlePulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.6; }
+    }
+
+    .background-grid {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      animation: gentlePulse 6s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    .cgi-container {
+      text-align: center;
+      max-width: 1000px;
+      width: 100%;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00d4ff;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .page-title {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #00d4ff;
+      margin: 0 0 20px 0;
+      animation: softGlow 3s ease-in-out infinite alternate;
+      text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+    }
+
+    .page-description {
+      font-size: 1.2rem;
+      color: #00ff41;
+      margin: 20px 0 40px 0;
+      line-height: 1.6;
+      animation: fadeInUp 1s ease-out 0.5s both;
+      opacity: 0.9;
+    }
+
+    .cgi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+      animation: fadeInUp 1s ease-out 0.7s both;
+    }
+
+    .cgi-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #00d4ff;
+      border-radius: 12px;
+      padding: 25px;
+      transition: all 0.3s ease;
+    }
+
+    .cgi-card:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: #00ff41;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    }
+
+    .cgi-title {
+      font-size: 1.5rem;
+      color: #00d4ff;
+      margin: 0 0 15px 0;
+      font-weight: bold;
+    }
+
+    .cgi-description {
+      font-size: 0.9rem;
+      color: #ffffff;
+      opacity: 0.7;
+      margin: 0 0 20px 0;
+    }
+
+    .cgi-input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00d4ff;
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin: 8px 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .cgi-input:focus {
+      outline: none;
+      border-color: #00ff41;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+
+    .cgi-select {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00d4ff;
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+
+    .cgi-button {
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .cgi-button:hover {
+      background: linear-gradient(45deg, #00ff41, #00cc33);
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(0, 255, 65, 0.4);
+    }
+
+    .cgi-result {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ff41;
+      border-radius: 8px;
+      min-height: 60px;
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #00ff41;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .cgi-result:empty::before {
+      content: "Résultat apparaîtra ici...";
+      opacity: 0.5;
+      font-style: italic;
+    }
+
+    .back-button {
+      background: linear-gradient(45deg, #666666, #444444);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+      display: inline-block;
+      margin: 30px 10px 0 10px;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00d4ff;
+      font-size: 0.9rem;
+      animation: fadeInUp 1s ease-out 1.5s both;
+    }
+
+    .error {
+      color: #ff4757 !important;
+      border-color: #ff4757 !important;
+    }
+
+    @media (max-width: 768px) {
+      .page-title { font-size: 2.5rem; }
+      .page-description { font-size: 1rem; }
+      .cgi-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .page-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-grid"></div>
+
+  <main class="cgi-container">
+    <h1 class="page-title">Tester les CGI</h1>
+    <p class="page-description">Testez les scripts CGI Python et Bash de votre serveur Webserv</p>
+
+    <div class="cgi-grid">
+      <!-- Time.py -->
+      <div class="cgi-card">
+        <div class="cgi-title">🕐 time.py</div>
+        <div class="cgi-description">Affiche l'heure et la date actuelles</div>
+        <button class="cgi-button" onclick="testCGI('time')">Exécuter time.py</button>
+        <div class="cgi-result" id="result-time"></div>
+      </div>
+
+      <!-- Env.sh -->
+      <div class="cgi-card">
+        <div class="cgi-title">🔧 env.sh</div>
+        <div class="cgi-description">Affiche les variables d'environnement CGI (Bash)</div>
+        <button class="cgi-button" onclick="testCGI('envsh')">Exécuter env.sh</button>
+        <div class="cgi-result" id="result-envsh"></div>
+      </div>
+
+      <!-- Calc.py -->
+      <div class="cgi-card">
+        <div class="cgi-title">🧮 calc.py</div>
+        <div class="cgi-description">Calculatrice CGI avec paramètres</div>
+        <input type="number" id="f_num" class="cgi-input" placeholder="Premier nombre" value="10">
+        <select id="oper" class="cgi-select">
+          <option value="+">+ Addition</option>
+          <option value="-">- Soustraction</option>
+          <option value="*">* Multiplication</option>
+          <option value="/">/ Division</option>
+          <option value="^">^ Puissance</option>
+          <option value="r">r Racine</option>
+        </select>
+        <input type="number" id="s_num" class="cgi-input" placeholder="Second nombre" value="5">
+        <button class="cgi-button" onclick="testCalc()">Calculer</button>
+        <div class="cgi-result" id="result-calc"></div>
+      </div>
+    </div>
+
+    <a href="/index.html" class="back-button">Retour à l'index</a>
+  </main>
+
+  <footer class="footer">42 Webserv - Page 5</footer>
+
+  <script>
+    function testCGI(script) {
+      const resultDiv = document.getElementById(`result-${script}`);
+      resultDiv.textContent = "Chargement...";
+      resultDiv.classList.remove('error');
+
+      let url = '';
+      if (script === 'time') url = '/cgi-bin/time.py';
+      else if (script === 'envsh') url = '/cgi-bin/env.sh';
+
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+          return res.text();
+        })
+        .then(html => {
+          // Extraire le contenu visible (sans les headers HTTP si présents)
+          const cleanHtml = html.replace(/^HTTP\/[\d.]+ \d+ .*\n/gm, '')
+                                .replace(/^Content-type:.*\n/gim, '')
+                                .replace(/^\r?\n/gm, '');
+          resultDiv.innerHTML = cleanHtml || html;
+        })
+        .catch(err => {
+          resultDiv.textContent = `Erreur: ${err.message}`;
+          resultDiv.classList.add('error');
+        });
+    }
+
+    function testCalc() {
+      const resultDiv = document.getElementById('result-calc');
+      const f_num = document.getElementById('f_num').value;
+      const oper = document.getElementById('oper').value;
+      const s_num = document.getElementById('s_num').value;
+
+      if (!f_num || !s_num) {
+        resultDiv.textContent = "Veuillez remplir les deux nombres !";
+        resultDiv.classList.add('error');
+        return;
+      }
+
+      resultDiv.textContent = "Calcul en cours...";
+      resultDiv.classList.remove('error');
+
+      const url = `/cgi-bin/calc.py?f_num=${encodeURIComponent(f_num)}&oper=${encodeURIComponent(oper)}&s_num=${encodeURIComponent(s_num)}`;
+
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+          return res.text();
+        })
+        .then(html => {
+          const cleanHtml = html.replace(/^HTTP\/[\d.]+ \d+ .*\n/gm, '')
+                                .replace(/^Content-type:.*\n/gim, '')
+                                .replace(/^\r?\n/gm, '');
+          resultDiv.innerHTML = cleanHtml || html;
+        })
+        .catch(err => {
+          resultDiv.textContent = `Erreur: ${err.message}`;
+          resultDiv.classList.add('error');
+        });
+    }
+  </script>
+</body>
+</html>

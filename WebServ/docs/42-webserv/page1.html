@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 1 - Bienvenue</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100%;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* Animations */
+        @keyframes softGlow {
+            0%, 100% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+            50% { text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes buttonHover {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Background effects */
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: gentlePulse 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* Main container */
+        .welcome-container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        /* Welcome title */
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin: 0 0 30px 0;
+            animation: softGlow 3s ease-in-out infinite alternate;
+            text-shadow:
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff;
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            font-size: 1.2rem;
+            color: #00ff41;
+            margin: 20px 0 40px 0;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            opacity: 0.9;
+        }
+
+        /* Back button */
+        .back-button {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 1s both;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.4);
+            animation: buttonHover 0.6s ease-in-out;
+        }
+
+
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00d4ff;
+            font-size: 0.9rem;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+
+            .welcome-message {
+                font-size: 1rem;
+            }
+
+            .welcome-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Background effects -->
+  <div class="background-grid"></div>
+  <main class="welcome-container">
+   <h1 class="welcome-title" id="welcome-title">Bienvenue sur la Page 1</h1>
+   <p class="welcome-message" id="welcome-message">Vous êtes maintenant sur la première page de test du serveur 42 Webserv.</p><a <a href="/index.html" class="back-button" id="back-button">Retour à l'index</a>
+  </main>
+  <footer class="footer">
+   <div>
+    42 Webserv - Page 1
+   </div>
+  </footer>
+  <script>
+        // Configuration par défaut
+        const defaultConfig = {
+            welcome_title: "Bienvenue sur la Page 1",
+            welcome_message: "Vous êtes maintenant sur la première page de test du serveur 42 Webserv.",
+            back_button_text: "Retour à l'index"
+        };
+
+        // Fonction pour mettre à jour l'interface
+        async function onConfigChange(config) {
+            const welcomeTitle = config.welcome_title || defaultConfig.welcome_title;
+            const welcomeMessage = config.welcome_message || defaultConfig.welcome_message;
+            const backButtonText = config.back_button_text || defaultConfig.back_button_text;
+
+            document.getElementById('welcome-title').textContent = welcomeTitle;
+            document.getElementById('welcome-message').textContent = welcomeMessage;
+            document.getElementById('back-button').textContent = backButtonText;
+        }
+
+        // Initialisation du SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["welcome_title", config.welcome_title || defaultConfig.welcome_title],
+                    ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
+                    ["back_button_text", config.back_button_text || defaultConfig.back_button_text]
+                ])
+            });
+        }
+
+        // Effet d'apparition progressive du contenu
+        window.addEventListener('load', () => {
+            const container = document.querySelector('.welcome-container');
+            container.style.transform = 'translateY(0)';
+            container.style.opacity = '1';
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a00310cc7cabc4e',t:'MTc2MzM5MjYxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
